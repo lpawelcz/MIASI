@@ -18,6 +18,8 @@ PLUS 	:	'+';
 MINUS 	:	'-';
 MUL 	:	'*';
 DIV 	:	'/';
+SHR	:	'>>';
+SHL	:	'<<';
 NL 	:	'\n';
 COMMENT	:	'//' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;} | '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;};
 WS	:	( ' ' | '\t' | '\r' ) {$channel=HIDDEN;};
@@ -34,11 +36,22 @@ line	:
 	NL;
 		
 expr returns [int out]:
-	e = expr1 {
+	e = expr_shift {
 		$out = $e.out;
 	};
 
-expr1 returns [int out]:
+expr_shift returns [int out]:
+	a = expr_add {
+		$out = $a.out;
+	}
+	( SHR a = expr_add {
+		$out >>= $a.out;
+	} |
+	SHL a = expr_add {
+		$out <<= $a.out;
+	})*;
+	
+expr_add returns [int out]:
 	m = expr_mul {
 		$out = $m.out;
 	}
