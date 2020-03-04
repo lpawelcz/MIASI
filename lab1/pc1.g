@@ -39,22 +39,22 @@ line	:
 	NL;
 		
 expr returns [int out]:
-	e = expr_bit {
-		$out = $e.out;
+	b = expr_bit {
+		$out = $b.out;
 	};
 
 expr_bit returns [int out]:
-	u = expr_shift {
-		$out = $u.out;
+	s = expr_shift {
+		$out = $s.out;
 	}
-	(AND u = expr_shift {
-		$out &= $u.out;
+	(AND s = expr_shift {
+		$out &= $s.out;
 	} |
-	XOR u = expr_shift {
-		$out ^= $u.out;
+	XOR s = expr_shift {
+		$out ^= $s.out;
 	} |
-	OR u = expr_shift {
-		$out |= $u.out;
+	OR s = expr_shift {
+		$out |= $s.out;
 	}
 	)*;
 
@@ -81,14 +81,14 @@ expr_add returns [int out]:
 	})*;
 	
 expr_mul returns [int out]:
-	e = expr_u {
-		$out = $e.out;
+	u = expr_u {
+		$out = $u.out;
 	}
-	(MUL e = expr_u {
-		$out *= $e.out;
+	(MUL u = expr_u {
+		$out *= $u.out;
 	} |
-	DIV e = expr_u {
-		$out /= $e.out;
+	DIV u = expr_u {
+		$out /= $u.out;
 	}
 	)*;
 	
