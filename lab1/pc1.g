@@ -20,6 +20,9 @@ MUL 	:	'*';
 DIV 	:	'/';
 SHR	:	'>>';
 SHL	:	'<<';
+AND	:	'&';
+XOR	:	'^';
+OR	:	'|';
 NL 	:	'\n';
 COMMENT	:	'//' ~('\n'|'\r')* '\r'? '\n' {$channel=HIDDEN;} | '/*' ( options {greedy=false;} : . )* '*/' {$channel=HIDDEN;};
 WS	:	( ' ' | '\t' | '\r' ) {$channel=HIDDEN;};
@@ -36,9 +39,24 @@ line	:
 	NL;
 		
 expr returns [int out]:
-	e = expr_shift {
+	e = expr_bit {
 		$out = $e.out;
 	};
+
+expr_bit returns [int out]:
+	u = expr_shift {
+		$out = $u.out;
+	}
+	(AND u = expr_shift {
+		$out &= $u.out;
+	} |
+	XOR u = expr_shift {
+		$out ^= $u.out;
+	} |
+	OR u = expr_shift {
+		$out |= $u.out;
+	}
+	)*;
 
 expr_shift returns [int out]:
 	a = expr_add {
@@ -74,6 +92,7 @@ expr_mul returns [int out]:
 	}
 	)*;
 	
+
 expr_u	returns [int out]:
 	a = atom {
 		$out = $a.out;
