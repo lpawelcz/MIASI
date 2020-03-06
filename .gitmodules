@@ -1,0 +1,6 @@
+[submodule "antlr_swing"]
+	path = antlr_swing
+	url = git@github.com:lpawelcz/antlr_swing.git 
+[submodule "miasi-eclipse"]
+	path = miasi-eclipse
+	url = git@github.com:lpawelcz/miasi-eclipse.git
